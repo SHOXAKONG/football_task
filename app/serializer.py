@@ -44,6 +44,7 @@ class StadiumSerializer(serializers.ModelSerializer):
 
 class BookingSerializer(serializers.ModelSerializer):
     id = serializers.CharField(read_only=True)
+    total_price = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
     class Meta:
         model = Booking
-        fields = ('id', 'phone_number', 'start_time', 'end_time', 'is_busy', 'status', 'user', 'stadium')
+        fields = ('id', 'phone_number', 'start_time', 'end_time', 'is_busy', 'status', 'user', 'stadium', 'total_price')

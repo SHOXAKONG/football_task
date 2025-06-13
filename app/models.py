@@ -2,6 +2,7 @@ from datetime import timedelta
 
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.db.models import Sum
 from django.utils import timezone
 from django_celery_beat.models import PeriodicTask
 
@@ -35,7 +36,7 @@ STATUS = (
 )
 
 def default_period_end():
-    return timezone.now() + timedelta(weeks=2)
+    return timezone.now() + timedelta(hours=1)
 
 class Booking(models.Model):
     phone_number = models.CharField(max_length=50)
@@ -46,9 +47,17 @@ class Booking(models.Model):
     status = models.CharField(choices=STATUS, max_length=255, default='Pending')
     user = models.ForeignKey(Users, on_delete=models.SET_NULL, null=True, blank=True)
     stadium = models.ForeignKey(Stadium, on_delete=models.CASCADE, related_name='booking')
+    total_price = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __str__(self) -> str:
         return f"{self.stadium} {self.start_time} - {self.end_time}"
+
+    def save(self, *args, **kwargs):
+        duration_in_seconds = (self.end_time - self.start_time).total_seconds()
+        hours = duration_in_seconds / 3600
+
+        self.total_price = self.stadium.price * hours
+        super().save(*args, **kwargs)
 
 
 class TaskOrder(models.Model):
