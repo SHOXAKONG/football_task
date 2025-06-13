@@ -12,7 +12,7 @@ def nearby_filter(user_latitude, user_longitude, stadiums):
 
             stadium_data = {
                 'id': stadium.id,
-                'title': stadium.title,
+                'name': stadium.name,
                 'address': stadium.address,
                 'contact': stadium.contact,
                 'image': stadium.image.url if stadium.image else None,

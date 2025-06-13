@@ -95,11 +95,11 @@ class StadiumUpdateAPIView(APIView):
 
 class StadiumsFilterAPIView(APIView):
     def get(self, request):
-        user_latitude = request.query_params.get('user_latitude', 0)
-        user_longitude = request.query_params.get('user_longitude', 0)
+        user_latitude = request.query_params.get('user_latitude', 41.316)
+        user_longitude = request.query_params.get('user_longitude', 64.420)
 
-        time_from = request.query_params.get('time_from', 0)
-        time_to = request.query_params.get('time_to', 0)
+        time_from = request.query_params.get('time_from', "2025-06-13 10:00")
+        time_to = request.query_params.get('time_to', "2025-06-13 11:00")
 
         if time_from and time_to:
             time_from = datetime.strptime(time_from, '%Y-%m-%d %H:%M')
