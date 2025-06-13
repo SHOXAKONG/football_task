@@ -37,6 +37,14 @@ class LogoutViewSet(viewsets.GenericViewSet):
         token.blacklist()
         return Response({"detail": "Successfully logged out"}, status=status.HTTP_200_OK)
 
+class UserListView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin]
+
+    def get(self, request):
+        queryset = Users.objects.filter(role='User')
+        serializer = UserSerializer(queryset, many=True)
+        return Response(serializer.data)
+
 class StadiumView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -110,6 +118,15 @@ class BookView(APIView):
         return Response(serializer.data)
 
 
+class OwnerDetailView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin]
+
+    def get(self, request, pk):
+        queryset = get_object_or_404(Users, id=pk, role='Owner')
+        serializer = UserSerializer(queryset, many=False)
+        return Response(serializer.data)
+
+
 class BookCancelView(APIView):
     permission_classes = [IsAuthenticated, IsOwnerOrAdmin]
 
@@ -127,6 +144,15 @@ class BookCancelView(APIView):
             'error': 'Invalid status.'
         }, status=400)
 
+
+
+class UserDetailView(APIView):
+    permission_classes = [IsAuthenticated, IsAdmin]
+
+    def get(self, request, pk):
+        queryset = get_object_or_404(Users, id=pk, role='User')
+        serializer = UserSerializer(queryset, many=False)
+        return Response(serializer.data)
 
 class BookCreateView(APIView):
     permission_classes = [IsAuthenticated, IsUserOrAdmin]
@@ -185,32 +211,5 @@ class OwnerListView(APIView):
     def get(self, request):
         queryset = Users.objects.filter(role='Owner')
         serializer = UserSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-
-class UserListView(APIView):
-    permission_classes = [IsAuthenticated, IsAdmin]
-
-    def get(self, request):
-        queryset = Users.objects.filter(role='User')
-        serializer = UserSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-
-class OwnerDetailView(APIView):
-    permission_classes = [IsAuthenticated, IsAdmin]
-
-    def get(self, request, pk):
-        queryset = get_object_or_404(Users, id=pk, role='Owner')
-        serializer = UserSerializer(queryset, many=False)
-        return Response(serializer.data)
-
-
-class UserDetailView(APIView):
-    permission_classes = [IsAuthenticated, IsAdmin]
-
-    def get(self, request, pk):
-        queryset = get_object_or_404(Users, id=pk, role='User')
-        serializer = UserSerializer(queryset, many=False)
         return Response(serializer.data)
 
