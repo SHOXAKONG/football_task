@@ -41,7 +41,7 @@ class LogoutViewSet(viewsets.GenericViewSet):
         token.blacklist()
         return Response({"detail": "Successfully logged out"}, status=status.HTTP_200_OK)
 
-class UserListView(APIView):
+class UserListAPIView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
 
     def get(self, request):
@@ -49,7 +49,7 @@ class UserListView(APIView):
         serializer = UserSerializer(queryset, many=True)
         return Response(serializer.data)
 
-class StadiumView(APIView):
+class StadiumAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
@@ -66,14 +66,14 @@ class StadiumView(APIView):
         return Response(serializer.errors, status=400)
 
 
-class StadiumDetailView(APIView):
+class StadiumDetailAPIView(APIView):
     def get(self, request, pk):
         queryset = get_object_or_404(Stadium, id=pk)
         serializer = StadiumSerializer(queryset, many=False)
         return Response(serializer.data)
 
 
-class StadiumUpdateView(APIView):
+class StadiumUpdateAPIView(APIView):
     permission_classes = [IsAuthenticated, IsOwnerOrAdmin]
 
     def patch(self, request, pk):
@@ -93,7 +93,7 @@ class StadiumUpdateView(APIView):
         }, status=204)
 
 
-class StadiumsFilter(APIView):
+class StadiumsFilterAPIView(APIView):
     def get(self, request):
         user_latitude = request.query_params.get('user_latitude', 0)
         user_longitude = request.query_params.get('user_longitude', 0)
@@ -113,8 +113,8 @@ class StadiumsFilter(APIView):
         return Response(nearby_filter(user_latitude, user_longitude, queryset))
 
 
-class BookView(APIView):
-    permission_classes = [IsAuthenticated, IsOwnerOrAdmin]
+class BookAPIView(APIView):
+    permission_classes = [IsAuthenticated, IsOwnerOrAdmin, IsUserOrAdmin]
 
     def get(self, request):
         queryset = Booking.objects.filter(stadium__owner__id=request.user.id)
@@ -122,7 +122,7 @@ class BookView(APIView):
         return Response(serializer.data)
 
 
-class OwnerDetailView(APIView):
+class OwnerDetailAPIView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
 
     def get(self, request, pk):
@@ -131,7 +131,7 @@ class OwnerDetailView(APIView):
         return Response(serializer.data)
 
 
-class BookCancelView(APIView):
+class BookCancelAPIView(APIView):
     permission_classes = [IsAuthenticated, IsOwnerOrAdmin]
 
     def get(self, request, pk):
@@ -150,7 +150,7 @@ class BookCancelView(APIView):
 
 
 
-class UserDetailView(APIView):
+class UserDetailAPIView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
 
     def get(self, request, pk):
@@ -158,7 +158,7 @@ class UserDetailView(APIView):
         serializer = UserSerializer(queryset, many=False)
         return Response(serializer.data)
 
-class BookCreateView(APIView):
+class BookCreateAPIView(APIView):
     permission_classes = [IsAuthenticated, IsUserOrAdmin]
 
     def post(self, request):
@@ -200,7 +200,7 @@ class BookCreateView(APIView):
         return Response(serializer.errors, status=400)
 
 
-class FilterStadiumsByOwner(APIView):
+class FilterStadiumsByOwnerAPIView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
 
     def get(self, request, pk):
@@ -209,7 +209,7 @@ class FilterStadiumsByOwner(APIView):
         return Response(serializer.data)
 
 
-class OwnerListView(APIView):
+class OwnerListAPIView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
 
     def get(self, request):
