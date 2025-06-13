@@ -14,6 +14,10 @@ from .permissions import IsAdmin, IsOwnerOrAdmin, IsUserOrAdmin
 from .models import Stadium, Booking, TaskOrder, Users
 from .serializer import StadiumSerializer, BookingSerializer
 
+class HelloAPIView(APIView):
+    def get(self, request):
+        return Response({"message" : "hello"})
+
 class RegisterViewSet(viewsets.GenericViewSet):
     serializer_class = RegisterSerializer
 
@@ -137,7 +141,7 @@ class BookCancelView(APIView):
             queryset.is_busy = False
             queryset.save()
             return Response({
-                'message': 'Book canceled successfully!'
+                'message': 'Booking canceled successfully!'
             }, status=200)
 
         return Response({
